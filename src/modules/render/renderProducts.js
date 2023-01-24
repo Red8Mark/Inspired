@@ -1,12 +1,15 @@
-import { API_URL, DATA } from "../const";
-import { createElement } from "../createElement";
+import { API_URL, COUNT_PAGINATION, DATA, products } from "../const";
+import { createElement } from "../utils/createElement";
 import { getData } from "../getData";
+import { renderPagination } from "./renderPagination";
+import { getFavorite } from "../controllers/favoriteController";
 
 export const renderProducts = async (title, params) => {
-  const products = document.querySelector(".goods");
   products.textContent = "";
 
-  const goods = await getData(`${API_URL}/api/goods`, params);
+  const data = await getData(`${API_URL}/api/goods`, params);
+
+  const goods = Array.isArray(data) ? data : data.goods;
 
   const container = createElement(
     "div",
@@ -18,7 +21,7 @@ export const renderProducts = async (title, params) => {
     }
   );
 
-  createElement(
+  const titleElem = createElement(
     "h2",
     {
       className: "goods__title",
@@ -28,6 +31,36 @@ export const renderProducts = async (title, params) => {
       parent: container,
     }
   );
+
+  if (Object.hasOwn(data, "totalCount")) {
+    createElement(
+      "sup",
+      {
+        className: "goods__title-sup",
+        innerHTML: `&nbsp(${data?.totalCount})`,
+      },
+      {
+        parent: titleElem,
+      }
+    );
+
+    if (!data.totalCount) {
+      createElement(
+        "p",
+        {
+          className: "goods__warning",
+          textContent: "По Вашему запросу ничего не найдено...",
+        },
+        {
+          parent: container,
+        }
+      );
+
+      return;
+    }
+  }
+
+  const favoriteList = getFavorite();
 
   const listCard = goods.map((product) => {
     const li = createElement("li", {
@@ -40,13 +73,18 @@ export const renderProducts = async (title, params) => {
         className: "product",
         innerHTML: `
         <a href="#/product/${product.id}" class="product__link">
-          <img src="${API_URL}/${product.pic}" alt="${product.title}" class="product__image">
+          <img src="${API_URL}/${product.pic}" alt="${
+          product.title
+        }" class="product__image">
           <h3 class="product__title">${product.title}</h3>
 
           <div class="product__row">
             <p class="product__price">руб ${product.price}</p>
 
-            <button data-id=${product.id} class="product__btn-favorite" aria-label="Добавить в избранное" ></button>
+            <button data-id=${
+              product.id
+            } class="product__btn-favorite favorite ${favoriteList.includes(product.id) ? "favorite_active" : ""}" 
+            aria-label="Добавить в избранное" ></button>
           </div>
         </a>
       `,
@@ -56,7 +94,7 @@ export const renderProducts = async (title, params) => {
       }
     );
 
-    const colors = createElement(
+    createElement(
       "ul",
       {
         className: "product__color-list",
@@ -75,7 +113,7 @@ export const renderProducts = async (title, params) => {
     return li;
   });
 
-  const list = createElement(
+  createElement(
     "ul",
     {
       className: "goods__list",
@@ -85,4 +123,18 @@ export const renderProducts = async (title, params) => {
       parent: container,
     }
   );
+
+  if (data.pages && data.pages > 1) {
+    const pagination = createElement(
+      "div",
+      {
+        className: "goods__pagination pagination",
+      },
+      {
+        parent: container,
+      }
+    );
+
+    renderPagination(pagination, data.page, data.pages, COUNT_PAGINATION);
+  }
 };

@@ -1,0 +1,41 @@
+.pagination{ 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  padding-top: 40px;
+
+  &__item {
+    list-style: none;
+    padding: 5px;
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+      border-bottom: 1px solid #000000;
+      transform: scale(1.1);
+    }
+  }
+
+  &__arrow {
+    display: block;
+    padding: 5px;
+    position: absolute;
+    transition: all 0.15s ease-in-out;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &_start {
+      left: 40%;
+    }
+
+    &_end {
+      right: 40%;
+    }
+
+    &_disabled {
+      color: #8A8A8A;
+    }
+  }
+}
