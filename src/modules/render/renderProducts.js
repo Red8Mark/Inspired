@@ -77,16 +77,15 @@ export const renderProducts = async (title, params) => {
           product.title
         }" class="product__image">
           <h3 class="product__title">${product.title}</h3>
-
-          <div class="product__row">
-            <p class="product__price">руб ${product.price}</p>
-
-            <button data-id=${
-              product.id
-            } class="product__btn-favorite favorite ${favoriteList.includes(product.id) ? "favorite_active" : ""}" 
-            aria-label="Добавить в избранное" ></button>
-          </div>
         </a>
+        <div class="product__row">
+          <p class="product__price">руб ${product.price}</p>
+
+          <button data-id=${
+            product.id
+          } class="product__btn-favorite favorite ${favoriteList.includes(product.id) ? "favorite_active" : ""}" 
+          aria-label="Добавить в избранное" ></button>
+        </div>
       `,
       },
       {
