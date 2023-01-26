@@ -1,5 +1,4 @@
 .card {
-  display: none;
   margin-bottom: 100px;
 
   &__container {
@@ -220,6 +219,10 @@
     @include tablet {
       margin-right: 8px;
     }
+  }
+
+  &__alert {
+    margin-top: 50px;
   }
 
 }
